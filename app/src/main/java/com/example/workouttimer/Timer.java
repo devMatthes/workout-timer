@@ -2,6 +2,8 @@ package com.example.workouttimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.AsyncTask;
@@ -27,10 +29,12 @@ public class Timer extends AppCompatActivity {
     private static final long START_IN_MILLIS = 10000;
     private static final long BREAK_IN_MILLIS = 5000;
     private static final int SETS = 5;
+    private Dialog dialog;
     private TextView mCountdownTextView;
     private TextView mSetsTextView;
     private Button mButtonStartPause;
     private Button mButtonReset;
+    private Button mButtonShowWorkout;
     private int mCurrSet = 0;
     private ToneGenerator toneG;
     private CountDownTimer mCountDownTimer;
@@ -56,6 +60,7 @@ public class Timer extends AppCompatActivity {
         mSetsTextView = findViewById(R.id.setsTxtVw);
         mButtonStartPause = findViewById(R.id.startBtn);
         mButtonReset = findViewById(R.id.resetBtn);
+        mButtonShowWorkout = findViewById(R.id.btn_showWorkout);
         toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 
         mButtonStartPause.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +78,13 @@ public class Timer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 resetTimer();
+            }
+        });
+
+        mButtonShowWorkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBoxingDialog(Timer.this);
             }
         });
 
@@ -244,5 +256,24 @@ public class Timer extends AppCompatActivity {
         updateCountDownText(mTimeLeftInMillis);
         mButtonReset.setVisibility(View.INVISIBLE);
         mButtonStartPause.setVisibility(View.VISIBLE);
+    }
+
+    public void showBoxingDialog (Activity activity) {
+        dialog = new Dialog(activity);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button btnStart = dialog.findViewById(R.id.button3);
+        btnStart.setVisibility(View.INVISIBLE);
+
+        Button btnExit = dialog.findViewById(R.id.exitBtn);
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }
